@@ -21,7 +21,7 @@ begin
             sid ||= generate_sid
             begin
               session = @pool.get(sid) || {}
-            rescue Memcached::ConnectionFailure, Errno::ECONNREFUSED
+            rescue Memcached::ConnectionFailure, Errno::ECONNREFUSED, Memcached::NotFound
               session = {}
             end
             [sid, session]
@@ -32,7 +32,7 @@ begin
             expiry  = options[:expire_after] || 0
             @pool.set(sid, session_data, expiry)
             return true
-          rescue Memcached::ConnectionFailure, Errno::ECONNREFUSED
+          rescue Memcached::ConnectionFailure, Errno::ECONNREFUSED, Memcached::NotFound
             return false
           end
           
@@ -40,7 +40,7 @@ begin
             if sid = current_session_id(env)
               @pool.delete(sid)
             end
-          rescue Memcached::ConnectionFailure, Errno::ECONNREFUSED
+          rescue Memcached::ConnectionFailure, Errno::ECONNREFUSED, Memcached::NotFound
             false
           end
           
