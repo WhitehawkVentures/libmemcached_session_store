@@ -3,7 +3,7 @@ begin
   require 'thread'
   module ActionController
     module Session
-      class LimemcachedStore < AbstractStore
+      class LibmemcachedStore < AbstractStore
         def initialize(app, options = {})
           # Support old :expires option
           options[:expire_after] ||= options[:expires]
